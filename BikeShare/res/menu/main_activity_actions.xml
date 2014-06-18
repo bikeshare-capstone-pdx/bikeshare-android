@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+      xmlns:bikeshare="http://schemas.android.com/apk/res-auto" >
+    <item android:id="@+id/action_favorites"
+	      android:title="@string/action_favorites"
+	      android:icon="@drawable/ic_action_important"
+	      bikeshare:showAsAction="always" />
+    <item android:id="@+id/action_search"
+          android:title="@string/action_search"
+          android:icon="@drawable/abc_ic_search"
+          bikeshare:showAsAction="always" 
+          bikeshare:actionViewClass="android.support.v7.widget.SearchView" />
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          bikeshare:showAsAction="never" />
+    <item android:id="@+id/action_login"
+          android:title="@string/action_login"
+          android:icon="@drawable/abc_ab_bottom_solid_dark_holo"
+          bikeshare:showAsAction="always" />
+	
+</menu>
