@@ -10,12 +10,12 @@
           android:icon="@drawable/abc_ic_search"
           bikeshare:showAsAction="always" 
           bikeshare:actionViewClass="android.support.v7.widget.SearchView" />
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          bikeshare:showAsAction="never" />
-    <item android:id="@+id/action_login"
-          android:title="@string/action_login"
-          android:icon="@drawable/abc_ab_bottom_solid_dark_holo"
-          bikeshare:showAsAction="never" />
+<!--     <item android:id="@+id/action_settings" -->
+<!--           android:title="@string/action_settings" -->
+<!--           bikeshare:showAsAction="never" /> -->
+<!--     <item android:id="@+id/action_login" -->
+<!--           android:title="@string/action_login" -->
+<!--           android:icon="@drawable/abc_ab_bottom_solid_dark_holo" -->
+<!--           bikeshare:showAsAction="never" /> -->
 	
 </menu>

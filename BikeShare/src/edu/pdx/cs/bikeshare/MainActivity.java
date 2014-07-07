@@ -6,6 +6,7 @@ import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -38,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
         myMapController.setZoom(13);
         myMapController.setCenter(new GeoPoint(45.55, -122.70));
          
-        Drawable marker=getResources().getDrawable(android.R.drawable.star_big_on);
+        Drawable marker=getResources().getDrawable(R.drawable.ic_location_marker);
         int markerWidth = marker.getIntrinsicWidth();
         int markerHeight = marker.getIntrinsicHeight();
         marker.setBounds(0, markerHeight, markerWidth, 0);
@@ -48,13 +49,52 @@ public class MainActivity extends ActionBarActivity {
         myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy);
         mapView.getOverlays().add(myItemizedOverlay);
          
-        GeoPoint myPoint1 = new GeoPoint(0*1000000, 0*1000000);
-        myItemizedOverlay.addItem(myPoint1, "myPoint1", "myPoint1");
+        GeoPoint OHSUSouthWaterfront = new GeoPoint(45.4992785100733, -122.670743465424);
+        myItemizedOverlay.addItem(OHSUSouthWaterfront, "OHSU South Waterfront", "OHSU South Waterfront");
         
-        GeoPoint myPoint2 = new GeoPoint(45.52, -122.6819);
-        myItemizedOverlay.addItem(myPoint2, "myPoint2", "myPoint2");
+        GeoPoint waterfrontPark = new GeoPoint(45.5153465357174, -122.673382759094);
+        myItemizedOverlay.addItem(waterfrontPark, "Waterfront Park", "Waterfront Park");
+        
+        GeoPoint eastbankEsplanade = new GeoPoint(45.5182333316815, -122.66716003418);
+        myItemizedOverlay.addItem(eastbankEsplanade, "Eastbank Esplanade", "Eastbank Esplanade");
+        
+        GeoPoint modaCenter = new GeoPoint(45.5309439966742, -122.667524814606);
+        myItemizedOverlay.addItem(modaCenter, "Moda Center", "Moda Center");
+        
+        GeoPoint portlandStateUniversity = new GeoPoint(45.5093168644112, -122.681311368942);
+        myItemizedOverlay.addItem(portlandStateUniversity, "Portland State University", "Portland State University");
+        
+        GeoPoint overlookPark  = new GeoPoint(45.5491969282445, -122.681010961533);
+        myItemizedOverlay.addItem(overlookPark, "Overlook Park", "Overlook Park");
+        
+        GeoPoint civicStadium  = new GeoPoint(45.5220708871078, -122.690554261208);
+        myItemizedOverlay.addItem(civicStadium, "Civic Stadium ", "Civic Stadium ");
          
     } 
+    
+//    public boolean onClick(OverlayItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//    	switch (item.getTitle()) {
+//    	case "OHSU South Waterfront":
+//    		break;
+//    	case "Waterfront Park":
+//    		break;
+//    	case "Eastbank Esplanade":
+//    		break;
+//    	case "Moda Center":
+//    		break;
+//    	case "Portland State University":
+//    		break;
+//    	case "Overlook Park":
+//    		break;
+//    	case "Civic Stadium ":
+//    		break;
+//    	}
+//    	
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
     @Override
@@ -76,13 +116,13 @@ public class MainActivity extends ActionBarActivity {
     	//buttons here.
         case R.id.action_search:
         	return true;
-        case R.id.action_settings:
-        	//openSettings();
-        	return true;
-        /*case R.id.action_favorites:
-        	return true;*/
-        case R.id.action_login:
-        	return true;
+//        case R.id.action_settings:
+//        	//openSettings();
+//        	return true;
+//        /*case R.id.action_favorites:
+//        	return true;*/
+//        case R.id.action_login:
+//        	return true;
         }
         return super.onOptionsItemSelected(item);
     }
