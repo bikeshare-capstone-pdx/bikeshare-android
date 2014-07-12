@@ -7,13 +7,11 @@ import org.osmdroid.api.IMapView;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
- 
 
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.widget.Toast;
  
-public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem>{
   
  private ArrayList<OverlayItem> overlayItemList = new ArrayList<OverlayItem>();
  
@@ -41,10 +39,5 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
  @Override
  public int size() {
   return overlayItemList.size();
- }
- 
- @Override
- public boolean onTap(int index) {
-	 return false;
  }
 }

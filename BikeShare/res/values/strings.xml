@@ -6,5 +6,9 @@
     <string name="action_settings">Settings</string>
     <string name="action_login">Login</string>
     <string name="action_favorites">Favorites</string>
+    <string name="dialog_title_check_out">Check out bike?</string>
+    <string name="dialog_check_out">Station ID: 1234</string>
+    <string name="check_out">Check out</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
