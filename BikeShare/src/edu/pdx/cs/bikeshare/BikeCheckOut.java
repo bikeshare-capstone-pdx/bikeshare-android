@@ -7,6 +7,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 public class BikeCheckOut extends DialogFragment{
+	
+	static BikeCheckOut newInstance(){
+		BikeCheckOut b = new BikeCheckOut();
+		return b;
+	}
+	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction

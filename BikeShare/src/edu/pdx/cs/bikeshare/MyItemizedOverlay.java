@@ -1,6 +1,5 @@
 package edu.pdx.cs.bikeshare;
 
-import java.io.Console;
 import java.util.ArrayList;
 
 import org.osmdroid.ResourceProxy;
@@ -11,8 +10,10 @@ import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Toast;
  
 public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
@@ -24,8 +25,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
   super(pDefaultMarker, pResourceProxy);
  }
  
- public MyItemizedOverlay(Drawable pDefaultMarker,
-   ResourceProxy pResourceProxy, Context context) {
+ public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Context context) {
    super(pDefaultMarker, pResourceProxy);
    mContext = context;
  }
@@ -52,17 +52,23 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
  }
  @Override
  protected boolean onTap(int index) {
-//	 OverlayItem item = overlayItemList.get(index);
+	 OverlayItem item = overlayItemList.get(index);
 //     AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 //     dialog.setTitle(item.getTitle());
 //     dialog.setMessage(item.getSnippet());
 //     dialog.show();
-	 OverlayItem item = overlayItemList.get(index);
-	 CharSequence text = item.getTitle();
-	 int duration = Toast.LENGTH_SHORT;
-
-	 Toast toast = Toast.makeText(mContext, text, duration);
-	 toast.show();
+	 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+     builder.setMessage(R.string.dialog_check_out).setTitle(item.getTitle())
+            .setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            })
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog
+                }
+            });
+     builder.show();
   return true;
  }
 }

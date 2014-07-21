@@ -8,13 +8,15 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import android.os.Bundle;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.graphics.drawable.Drawable;
 import edu.pdx.cs.bikeshare.R;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 public class MainActivity extends ActionBarActivity {
 	MyItemizedOverlay myItemizedOverlay = null;
 	
@@ -38,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
          
         ResourceProxy resourceProxy = new DefaultResourceProxyImpl(getApplicationContext());
         
-        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, getApplicationContext());
+        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, this);
         mapView.getOverlays().add(myItemizedOverlay);
         
         GeoPoint OHSUSouthWaterfront = new GeoPoint(45.4992785100733, -122.670743465424);
@@ -83,5 +85,6 @@ public class MainActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }
