@@ -14,7 +14,6 @@ public class BikeCheckOut extends DialogFragment{
         builder.setMessage(R.string.dialog_check_out).setTitle(R.string.dialog_title_check_out)
                .setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // FIRE ZE MISSILES!
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
          
         ResourceProxy resourceProxy = new DefaultResourceProxyImpl(getApplicationContext());
         
-        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy);
+        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, getApplicationContext());
         mapView.getOverlays().add(myItemizedOverlay);
         
         GeoPoint OHSUSouthWaterfront = new GeoPoint(45.4992785100733, -122.670743465424);
@@ -61,13 +61,11 @@ public class MainActivity extends ActionBarActivity {
         
         GeoPoint civicStadium  = new GeoPoint(45.5220708871078, -122.690554261208);
         myItemizedOverlay.addItem(civicStadium, "Civic Stadium ", "Civic Stadium ");
-         
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
     	MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
