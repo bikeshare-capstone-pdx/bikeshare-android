@@ -8,9 +8,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import android.os.Bundle;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.graphics.drawable.Drawable;
 import edu.pdx.cs.bikeshare.R;
 import android.support.v7.app.ActionBarActivity;
