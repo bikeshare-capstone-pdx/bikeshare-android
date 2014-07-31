@@ -1259,17 +1259,14 @@ containing a value of this type.
         public static final int action_login=0x7f0a0010;
         public static final int action_search=0x7f0a000e;
         public static final int action_settings=0x7f0a000f;
-        public static final int action_sign_in=0x7f0a0019;
+        public static final int action_sign_in=0x7f0a0017;
         public static final int app_name=0x7f0a000d;
         public static final int cancel=0x7f0a0016;
         public static final int check_out=0x7f0a0015;
         public static final int dialog_bikes_available=0x7f0a0014;
         public static final int dialog_check_out=0x7f0a0012;
         public static final int dialog_station_id=0x7f0a0013;
-        public static final int hello_world=0x7f0a001b;
-        public static final int prompt_email=0x7f0a0017;
-        public static final int prompt_password=0x7f0a0018;
-        public static final int title_activity_login=0x7f0a001a;
+        public static final int title_activity_login=0x7f0a0018;
     }
     public static final class style {
         /** 

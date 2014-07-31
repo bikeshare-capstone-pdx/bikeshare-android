@@ -11,8 +11,6 @@
     <string name="dialog_bikes_available">Number of bikes available: 17</string>
     <string name="check_out">Check out</string>
     <string name="cancel">Cancel</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
 
     <string-array name="user_array">
@@ -23,6 +21,5 @@
     </string-array>
 
     <string name="title_activity_login">BikeShare Login</string>
-    <string name="hello_world">Hello world!</string>
 
 </resources>
