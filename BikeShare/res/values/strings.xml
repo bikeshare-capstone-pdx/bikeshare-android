@@ -11,6 +11,15 @@
     <string name="dialog_bikes_available">Number of bikes available: 17</string>
     <string name="check_out">Check out</string>
     <string name="cancel">Cancel</string>
-    <string name="title_activity_dialog">DialogActivity</string>
+    <string name="action_sign_in">Sign in</string>
+
+    <string-array name="user_array">
+        <item>frying_solo</item>
+        <item>turnip_the_beet</item>
+        <item>shaquille_o\'peel</item>
+        <item>[\"hip\",\"hip\"]</item>
+    </string-array>
+
+    <string name="title_activity_login">BikeShare Login</string>
 
 </resources>
