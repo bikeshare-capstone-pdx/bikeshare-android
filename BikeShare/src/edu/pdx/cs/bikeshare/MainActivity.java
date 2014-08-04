@@ -1,21 +1,38 @@
 package edu.pdx.cs.bikeshare;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.graphics.drawable.Drawable;
 import edu.pdx.cs.bikeshare.R;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 public class MainActivity extends ActionBarActivity {
 	MyItemizedOverlay myItemizedOverlay = null;
+	public static final String apiUrl = "http://api.bikeshare.cs.pdx.edu";
+	public static final String tag = "MainActivity";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,26 +57,7 @@ public class MainActivity extends ActionBarActivity {
         myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, this);
         mapView.getOverlays().add(myItemizedOverlay);
         
-        GeoPoint OHSUSouthWaterfront = new GeoPoint(45.4992785100733, -122.670743465424);
-        myItemizedOverlay.addItem(OHSUSouthWaterfront, "OHSU South Waterfront", "OHSU South Waterfront");
-        
-        GeoPoint waterfrontPark = new GeoPoint(45.5153465357174, -122.673382759094);
-        myItemizedOverlay.addItem(waterfrontPark, "Waterfront Park", "Waterfront Park");
-        
-        GeoPoint eastbankEsplanade = new GeoPoint(45.5182333316815, -122.66716003418);
-        myItemizedOverlay.addItem(eastbankEsplanade, "Eastbank Esplanade", "Eastbank Esplanade");
-        
-        GeoPoint modaCenter = new GeoPoint(45.5309439966742, -122.667524814606);
-        myItemizedOverlay.addItem(modaCenter, "Moda Center", "Moda Center");
-        
-        GeoPoint portlandStateUniversity = new GeoPoint(45.5093168644112, -122.681311368942);
-        myItemizedOverlay.addItem(portlandStateUniversity, "Portland State University", "Portland State University");
-        
-        GeoPoint overlookPark  = new GeoPoint(45.5491969282445, -122.681010961533);
-        myItemizedOverlay.addItem(overlookPark, "Overlook Park", "Overlook Park");
-        
-        GeoPoint civicStadium  = new GeoPoint(45.5220708871078, -122.690554261208);
-        myItemizedOverlay.addItem(civicStadium, "Civic Stadium ", "Civic Stadium ");
+        new ShowAllStations().execute();
     }
 
 
@@ -84,4 +82,67 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
+    private class ShowAllStations extends AsyncTask<Void, Void, String> {
+        private final static String route = "/REST/1.0/stations/all";
+        private final static String tag = "ShowAllStations";
+        
+        @Override
+        protected String doInBackground(Void... params) {
+            // Call REST API to find locations of BikeShare stations.
+            HttpClient web = new DefaultHttpClient();
+            String apiData = null;
+            try {
+                HttpResponse resp = web.execute(new HttpGet(apiUrl + route));
+                StatusLine status = resp.getStatusLine();
+                if (status.getStatusCode() == HttpStatus.SC_OK) {
+                    // REST API returned success.
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    resp.getEntity().writeTo(out);
+                    out.close();
+                    apiData = out.toString();
+                } else {
+                    // REST API returned an error.
+                    resp.getEntity().getContent().close();
+                    Log.e(tag,"REST API returned error: " + status.getReasonPhrase());
+                }
+            } catch (ClientProtocolException e) {
+                // HTTP barfed.
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return apiData;
+        }
+        
+        @Override
+        protected void onPostExecute(String result) {
+            // If we received data from the API, parse the JSON.
+            if (result != null) {
+                try {
+                    JSONObject jApiData = new JSONObject(result);
+                    JSONArray jStations = jApiData.getJSONArray("stations");
+                    for (int i = 0; i < jStations.length(); i++) {
+                        JSONObject jStation = jStations.getJSONObject(i);
+                        
+                        // Construct a station object from the data.
+                        Station s = new Station();
+                        s.station_id = jStation.getInt("STATION_ID");
+                        s.station_name = jStation.getString("STATION_NAME");
+                        s.street_address = jStation.getString("STREET_ADDRESS");
+                        s.latitude = jStation.getDouble("LATITUDE");
+                        s.longitude = jStation.getDouble("LONGITUDE");
+                        
+                        // Put station pin on the map.
+                        GeoPoint p = new GeoPoint(s.latitude, s.longitude);
+                        myItemizedOverlay.addItem(p, s.station_name, s.station_name);
+                    }
+                } catch (JSONException e) {
+                    // Failed to parse the JSON.
+                    e.printStackTrace();
+                }
+            } else {
+                // Failed to get data from the API.
+            }
+        }
+    }
 }
