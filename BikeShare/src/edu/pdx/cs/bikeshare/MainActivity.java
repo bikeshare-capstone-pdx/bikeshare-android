@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
          
         ResourceProxy resourceProxy = new DefaultResourceProxyImpl(getApplicationContext());
         
-        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, this);
+        myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, this, mapView);
         mapView.getOverlays().add(myItemizedOverlay);
         
         new ShowAllStations().execute();
