@@ -118,11 +118,13 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
                     String station_name = jStation.getString("STATION_NAME");
                     String street_address = jStation.getString("STREET_ADDRESS");
                     int current_bikes = jStation.getInt("CURRENT_BIKES");
+                    int current_docks = jStation.getInt("CURRENT_DOCKS");
                     int current_discount = jStation.getInt("CURRENT_DISCOUNT");
                     String checkoutMsg = "Station ID: %d\n";
                     checkoutMsg += "Address: %s\n";
                     checkoutMsg += "Number of bikes available: %d\n";
                     checkoutMsg += "Check out bike?";
+                    // Display dialog box asking if the user wants to check out a bike.
                     AlertDialog.Builder checkOut = new AlertDialog.Builder(mContext);
                     checkOut.setMessage(String.format(checkoutMsg, station_id, street_address, current_bikes)).setTitle(station_name)
                     .setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
@@ -135,6 +137,18 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
                         }
                     });
                     checkOut.show();
+                    // Update the data structure containing the map pins with the additional API info.
+                    for (OverlayItem item : overlayItemList) {
+                    	if (item instanceof Station) {
+                    		Station s = (Station)item;
+                    		if (s.station_id == station_id) {
+                    			s.current_bikes = current_bikes;
+                    			s.current_docks = current_docks;
+                    			s.current_discount = current_discount;
+                    			break;
+                    		}
+                    	}
+                    }
                 } catch (JSONException e) {
                     // Failed to parse the JSON.
                     e.printStackTrace();

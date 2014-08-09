@@ -14,5 +14,6 @@ public class Station extends OverlayItem {
     public double latitude;
     public double longitude;
     public int current_bikes;
+    public int current_docks;
     public int current_discount;
 }
