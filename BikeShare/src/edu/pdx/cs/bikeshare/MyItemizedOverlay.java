@@ -123,13 +123,14 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 					int current_discount = jStation.getInt("CURRENT_DISCOUNT");
 					if (!haveBike) {
 						// We don't have a bike, offer to check one out.
-						String checkoutMsg = "Station ID: %d\n";
+						String checkoutMsg = "%s\n";
+						checkoutMsg += "Station ID: %d\n";
 						checkoutMsg += "Address: %s\n";
-						checkoutMsg += "Number of bikes available: %d\n";
+						checkoutMsg += "Number of bikes available: %d\n\n";
 						checkoutMsg += "Check out bike?";
 						// Display dialog box asking if the user wants to check out a bike.
 						AlertDialog.Builder checkOut = new AlertDialog.Builder(mContext);
-						checkOut.setMessage(String.format(checkoutMsg, station_id, street_address, current_bikes)).setTitle(station_name)
+						checkOut.setMessage(String.format(checkoutMsg, station_name, station_id, street_address, current_bikes)).setTitle("Check out bike")
 						.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								haveBike = true;
@@ -143,13 +144,14 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						checkOut.show();
 					} else {
 						// We have a bike, offer to check it in.
-						String checkinMsg = "Station ID: %d\n";
+						String checkinMsg = "%s\n";
+						checkinMsg += "Station ID: %d\n";
 						checkinMsg += "Address: %s\n";
-						checkinMsg += "Number of docks available: %d\n";
+						checkinMsg += "Number of docks available: %d\n\n";
 						checkinMsg += "Check in bike?";
 						// Display dialog box asking if the user wants to check out a bike.
 						AlertDialog.Builder checkIn = new AlertDialog.Builder(mContext);
-						checkIn.setMessage(String.format(checkinMsg, station_id, street_address, current_docks)).setTitle(station_name)
+						checkIn.setMessage(String.format(checkinMsg, station_name, station_id, street_address, current_docks)).setTitle("Check in bike")
 						.setPositiveButton(R.string.check_in, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								haveBike = false;
