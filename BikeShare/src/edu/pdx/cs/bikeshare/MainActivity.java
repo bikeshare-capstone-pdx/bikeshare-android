@@ -125,16 +125,19 @@ public class MainActivity extends ActionBarActivity {
                         JSONObject jStation = jStations.getJSONObject(i);
                         
                         // Construct a station object from the data.
-                        Station s = new Station();
+                        double latitude = jStation.getDouble("LATITUDE");
+                        double longitude = jStation.getDouble("LONGITUDE");
+                        String name = jStation.getString("STATION_NAME");
+                        String addr = jStation.getString("STREET_ADDRESS");
+                        Station s = new Station(name, addr, new GeoPoint(latitude,longitude));
                         s.station_id = jStation.getInt("STATION_ID");
-                        s.station_name = jStation.getString("STATION_NAME");
-                        s.street_address = jStation.getString("STREET_ADDRESS");
-                        s.latitude = jStation.getDouble("LATITUDE");
-                        s.longitude = jStation.getDouble("LONGITUDE");
+                        s.station_name = name;
+                        s.street_address = addr;
+                        s.latitude = latitude;
+                        s.longitude = longitude;
                         
                         // Put station pin on the map.
-                        GeoPoint p = new GeoPoint(s.latitude, s.longitude);
-                        myItemizedOverlay.addItem(p, s.station_name, s.station_name);
+                        myItemizedOverlay.addItem(s);
                     }
                 } catch (JSONException e) {
                     // Failed to parse the JSON.
