@@ -3,14 +3,22 @@ package edu.pdx.cs.bikeshare;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.ResourceProxy;
@@ -33,7 +41,9 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> overlayItemList = new ArrayList<OverlayItem>();
 	Context mContext;
 	public static boolean haveBike = false;
- 
+	public static int checkoutStationId = 0;
+	public static int checkinStationId = 0;
+
 	public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy) {
 		super(pDefaultMarker, pResourceProxy);
 	}
@@ -128,12 +138,14 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						checkoutMsg += "Address: %s\n";
 						checkoutMsg += "Number of bikes available: %d\n\n";
 						checkoutMsg += "Check out bike?";
+						checkoutStationId = station_id;
 						// Display dialog box asking if the user wants to check out a bike.
 						AlertDialog.Builder checkOut = new AlertDialog.Builder(mContext);
 						checkOut.setMessage(String.format(checkoutMsg, station_name, station_id, street_address, current_bikes)).setTitle("Check out bike")
 						.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								haveBike = true;
+								int user_id = 3872;
+								new CheckoutBike().execute(checkoutStationId, user_id);
 							}
 						})
 						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -183,6 +195,59 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			} else {
 				// Failed to get data from the API.
 			}
+		}
+	}
+
+	// When invoked, should be passed two int arguments: first a station_id, second a user_id.
+	private class CheckoutBike extends AsyncTask<Integer, Void, Integer> {
+		private final static String route = "/REST/1.0/bikes/checkout";
+		private final static String tag = "CheckoutBike";
+
+		@Override
+		protected Integer doInBackground(Integer... params) {
+			// Call REST API to checkout a bike.
+			HttpClient web = new DefaultHttpClient();
+			int station_id = params[0];
+			int user_id = params[1];
+			int apiData = -1;
+			try {
+				HttpPost request = new HttpPost(apiUrl + route);
+				List<NameValuePair> formData = new ArrayList<NameValuePair>(2);
+				formData.add(new BasicNameValuePair("station_id", String.valueOf(station_id)));
+				formData.add(new BasicNameValuePair("user_id", String.valueOf(user_id)));
+				request.setEntity(new UrlEncodedFormEntity(formData, "UTF-8"));
+				HttpResponse resp = web.execute(request);
+				StatusLine status = resp.getStatusLine();
+				apiData = status.getStatusCode();
+				resp.getEntity().getContent().close();
+			} catch (ClientProtocolException e) {
+				// HTTP barfed.
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return apiData;
+		}
+
+		protected void onPostExecute(Integer result) {
+			if (result == HttpStatus.SC_OK) {
+				// REST API returned success.
+				haveBike = true;
+			} else if (result == HttpStatus.SC_UNAUTHORIZED) {
+				// Failure (401) - User does not exist
+				// TODO: Do something that makes sense here.
+			} else if (result == HttpStatus.SC_FORBIDDEN) {
+				// Failure (403) - User already has a bike checked out
+				// TODO: Do something that makes sense here.
+				haveBike = true;
+			} else if (result == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+				// Failure (503) - No bikes available at station
+				// TODO: Do something that makes sense here.
+			} else {
+				// REST API returned an error.
+				Log.e(tag,"REST API returned error: " + result.toString());
+			}
+			return;
 		}
 	}
 }
