@@ -161,12 +161,14 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						checkinMsg += "Address: %s\n";
 						checkinMsg += "Number of docks available: %d\n\n";
 						checkinMsg += "Check in bike?";
+						checkinStationId = station_id;
 						// Display dialog box asking if the user wants to check out a bike.
 						AlertDialog.Builder checkIn = new AlertDialog.Builder(mContext);
 						checkIn.setMessage(String.format(checkinMsg, station_name, station_id, street_address, current_docks)).setTitle("Check in bike")
 						.setPositiveButton(R.string.check_in, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								haveBike = false;
+								int user_id = 3872;
+								new CheckinBike().execute(checkinStationId, user_id);
 							}
 						})
 						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -236,13 +238,72 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			} else if (result == HttpStatus.SC_UNAUTHORIZED) {
 				// Failure (401) - User does not exist
 				// TODO: Do something that makes sense here.
+				Log.e(tag,"REST API returned error: User does not exist");
 			} else if (result == HttpStatus.SC_FORBIDDEN) {
 				// Failure (403) - User already has a bike checked out
 				// TODO: Do something that makes sense here.
+				Log.e(tag,"REST API returned error. User already has a bike checked out");
 				haveBike = true;
 			} else if (result == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 				// Failure (503) - No bikes available at station
 				// TODO: Do something that makes sense here.
+				Log.e(tag,"REST API returned error: No bikes available at station");
+			} else {
+				// REST API returned an error.
+				Log.e(tag,"REST API returned error: " + result.toString());
+			}
+			return;
+		}
+	}
+
+	// When invoked, should be passed two int arguments: first a station_id, second a user_id.
+	private class CheckinBike extends AsyncTask<Integer, Void, Integer> {
+		private final static String route = "/REST/1.0/bikes/checkin";
+		private final static String tag = "CheckinBike";
+
+		@Override
+		protected Integer doInBackground(Integer... params) {
+			// Call REST API to checkout a bike.
+			HttpClient web = new DefaultHttpClient();
+			int station_id = params[0];
+			int user_id = params[1];
+			int apiData = -1;
+			try {
+				HttpPost request = new HttpPost(apiUrl + route);
+				List<NameValuePair> formData = new ArrayList<NameValuePair>(2);
+				formData.add(new BasicNameValuePair("station_id", String.valueOf(station_id)));
+				formData.add(new BasicNameValuePair("user_id", String.valueOf(user_id)));
+				request.setEntity(new UrlEncodedFormEntity(formData, "UTF-8"));
+				HttpResponse resp = web.execute(request);
+				StatusLine status = resp.getStatusLine();
+				apiData = status.getStatusCode();
+				resp.getEntity().getContent().close();
+			} catch (ClientProtocolException e) {
+				// HTTP barfed.
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return apiData;
+		}
+
+		protected void onPostExecute(Integer result) {
+			if (result == HttpStatus.SC_OK) {
+				// REST API returned success.
+				haveBike = false;
+			} else if (result == HttpStatus.SC_UNAUTHORIZED) {
+				// Failure (401) - User does not exist
+				// TODO: Do something that makes sense here.
+				Log.e(tag,"REST API returned error: User does not exist");
+			} else if (result == HttpStatus.SC_FORBIDDEN) {
+				// Failure (403) - User does not have a bike to checkin
+				// TODO: Do something that makes sense here.
+				haveBike = false;
+				Log.e(tag,"REST API returned error: User does not have a bike to checkin");
+			} else if (result == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+				// Failure (503) - No docks available at station
+				// TODO: Do something that makes sense here.
+				Log.e(tag,"REST API returned error: No docks available at station");
 			} else {
 				// REST API returned an error.
 				Log.e(tag,"REST API returned error: " + result.toString());
