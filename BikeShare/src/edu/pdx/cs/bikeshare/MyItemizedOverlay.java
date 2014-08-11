@@ -40,6 +40,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private static final String apiUrl = MainActivity.apiUrl;
 	private ArrayList<OverlayItem> overlayItemList = new ArrayList<OverlayItem>();
 	Context mContext;
+ 
 	public static boolean haveBike = false;
 	public static int checkoutStationId = 0;
 	public static int checkinStationId = 0;
