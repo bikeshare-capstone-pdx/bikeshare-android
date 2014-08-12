@@ -14,12 +14,17 @@
     <string name="action_sign_in">Sign in</string>
 
     <string-array name="user_array">
-        <item>frying_solo</item>
-        <item>turnip_the_beet</item>
-        <item>shaquille_o\'peel</item>
-        <item>[\"hip\",\"hip\"]</item>
+        <item>Sherry Kiss</item>
+        <item>Tim_Sabath</item>
+        <item>Jay_Hong</item>
+        <item>Kanye_Maes</item>
+        <item>Albert_Smith</item>
+        <item>Mark_Sabath</item>
+        <item>Sherry_Logan</item>
+        <item>Ben_Mack</item>
+        <item>Jack_West</item>
     </string-array>
 
-    <string name="title_activity_login">BikeShare Login</string>
+ <!--     <string name="title_activity_login">BikeShare</string>-->
 
 </resources>
