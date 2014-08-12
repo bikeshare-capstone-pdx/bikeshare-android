@@ -1,29 +1,27 @@
 package edu.pdx.cs.bikeshare;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +31,10 @@ import android.widget.Spinner;
 public class LoginActivity extends Activity {
 
 	public static final String apiUrl = "http://api.bikeshare.cs.pdx.edu";
+	private final String signUpPath = "/REST/1.0/login/signup";
 	public static final String tag = "LoginActivity";
 	public static final String EXTRA_MESSAGE = "edu.pdx.cs.bikeshare.MESSAGE";
 	private Spinner spinner;
-	private List<String> user_spinner_list = new ArrayList<String>();
-	private ArrayList<User> userList = new ArrayList<User>();
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,12 +42,9 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
  
         spinner = (Spinner) findViewById(R.id.users_spinner);
-
-        new LoginUser().execute();
-
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, user_spinner_list);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.user_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -60,17 +54,69 @@ public class LoginActivity extends Activity {
   
     // Called when the user clicks the Send button 
     public void login(View view) {
-        String message = null;
-        for (User u: userList){
-    	  if(u.user_name.equals(spinner.getSelectedItem().toString())){  
-    	    message = Integer.toString(u.user_id);
-    	    break;
-    	  }
-        }
+       	String message = null;
+    	int u_id = signUp();
+    	if (u_id != -1){
+    		message = Integer.toString(u_id);
+    	}       
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
+
+	private int signUp() {
+		System.out.println("Starting to sign up");
+		JSONObject result;
+		HttpClient web = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(apiUrl + signUpPath);
+		
+		String [] fullName = spinner.getSelectedItem().toString().split(" ");
+		String first = fullName[0];
+		String last = fullName[1];
+		System.out.println(first);
+		System.out.println(last);
+		
+		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
+		params.add(new BasicNameValuePair("first_name", first));
+		params.add(new BasicNameValuePair("last_name", last));
+		for(NameValuePair n: params){
+			System.out.println(n);
+		}
+		
+		try {
+		    httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+		    HttpResponse response = web.execute(httppost);
+		    HttpEntity entity = response.getEntity();
+		    if (entity != null) {
+		    	InputStream instream = entity.getContent();
+		    	String resp = "";
+		    	String line;
+		    	BufferedReader rd = new BufferedReader(new InputStreamReader(instream));
+		    	while ((line = rd.readLine()) != null) {
+		    		resp += line;
+		    }
+		    result = new JSONObject(resp);
+		    System.out.println(resp);
+		    // Return user id
+		    return result.getInt("USER_ID");
+		    } 
+		    else {
+		    	System.out.println("Didn't get anything back");
+		    	return -1;
+		    }
+		} 
+		catch (ClientProtocolException e) {
+		e.printStackTrace();
+		} 
+		catch (IOException e) {
+		e.printStackTrace();
+		} 
+		catch (JSONException e) {
+		e.printStackTrace();
+		}
+		return -1;
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,64 +137,5 @@ public class LoginActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-    private class LoginUser extends AsyncTask<Void, Void, String> {
-        private final static String route = "/REST/1.0/users/all";
-        private final static String tag = "LoginUser";
 
-		@Override
-        protected String doInBackground(Void... params) {
-            // Call REST API to login users
-            HttpClient web = new DefaultHttpClient();
-            String apiData = null;
-            try {
-                HttpResponse resp = web.execute(new HttpGet(apiUrl + route));
-                StatusLine status = resp.getStatusLine();
-                if (status.getStatusCode() == HttpStatus.SC_OK) {
-                    // REST API returned success.
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    resp.getEntity().writeTo(out);
-                    out.close();
-                    apiData = out.toString();
-                } else {
-                    // REST API returned an error.
-                    resp.getEntity().getContent().close();
-                    Log.e(tag,"REST API returned error: " + status.getReasonPhrase());
-                }
-            } catch (ClientProtocolException e) {
-                // HTTP barfed.
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return apiData;
-        }
-        
-        @Override
-        protected void onPostExecute(String result) {
-            // If we received data from the API, parse the JSON.
-            if (result != null) {
-                try {
-                	JSONObject jApiData = new JSONObject(result);
-                    JSONArray jUsers = jApiData.getJSONArray("users");
-                    for (int i = 0; i < jUsers.length(); i++) {
-                        JSONObject jUser = jUsers.getJSONObject(i);
-                        
-                        // Construct a user object from the data.
-                        User u = new User();
-                        u.user_name = jUser.getString("USER_NAME");
-                        u.user_id = jUser.getInt("USER_ID");
-                        user_spinner_list.add(u.user_name);
-                        userList.add(u);
-                    }
-                }
-                catch (JSONException e) {
-                    // Failed to parse the JSON.
-                    e.printStackTrace();
-                }
-            } 
-            else {
-                // Failed to get data from the API.
-            }
-        }
-    }
 }

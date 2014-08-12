@@ -15,14 +15,15 @@
 
     <string-array name="user_array">
         <item>Sherry Kiss</item>
-        <item>Tim_Sabath</item>
-        <item>Jay_Hong</item>
-        <item>Kanye_Maes</item>
-        <item>Albert_Smith</item>
-        <item>Mark_Sabath</item>
-        <item>Sherry_Logan</item>
-        <item>Ben_Mack</item>
-        <item>Jack_West</item>
+        <item>Tim Sabath</item>
+        <item>Jay Hong</item>
+        <item>Kanye Maes</item>
+        <item>Albert Smith</item>
+        <item>Boba Fett</item>
+        <item>Mark Sabath</item>
+        <item>Sherry Logan</item>
+        <item>Ben Mack</item>
+        <item>Jack West</item>
     </string-array>
 
  <!--     <string name="title_activity_login">BikeShare</string>-->
