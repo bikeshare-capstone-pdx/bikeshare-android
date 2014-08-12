@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         
         myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, this);
         mapView.getOverlays().add(myItemizedOverlay);
-        
+               
         new ShowAllStations().execute();
     }
 
