@@ -142,7 +142,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						checkOut.setMessage(String.format(checkoutMsg, station_name, station_id, street_address, current_bikes)).setTitle("Check out bike")
 						.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								int user_id = 3872;
+								int user_id = 1564;
 								new CheckoutBike().execute(checkoutStationId, user_id);
 							}
 						})
@@ -165,7 +165,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						checkIn.setMessage(String.format(checkinMsg, station_name, station_id, street_address, current_docks)).setTitle("Check in bike")
 						.setPositiveButton(R.string.check_in, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								int user_id = 3872;
+								int user_id = 1564;
 								new CheckinBike().execute(checkinStationId, user_id);
 							}
 						})
@@ -239,12 +239,26 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				Log.e(tag,"REST API returned error: User does not exist");
 			} else if (result == HttpStatus.SC_FORBIDDEN) {
 				// Failure (403) - User already has a bike checked out
-				// TODO: Do something that makes sense here.
+				AlertDialog.Builder err = new AlertDialog.Builder(mContext);
+				err.setMessage("You already have a bike checked out!").setTitle("Error")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Do nothing.
+					}
+				});
+				err.show();
 				Log.e(tag,"REST API returned error. User already has a bike checked out");
 				haveBike = true;
 			} else if (result == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 				// Failure (503) - No bikes available at station
-				// TODO: Do something that makes sense here.
+				AlertDialog.Builder err = new AlertDialog.Builder(mContext);
+				err.setMessage("No bikes available at this station.").setTitle("Error")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Do nothing.
+					}
+				});
+				err.show();
 				Log.e(tag,"REST API returned error: No bikes available at station");
 			} else {
 				// REST API returned an error.
@@ -295,12 +309,26 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				Log.e(tag,"REST API returned error: User does not exist");
 			} else if (result == HttpStatus.SC_FORBIDDEN) {
 				// Failure (403) - User does not have a bike to checkin
-				// TODO: Do something that makes sense here.
+				AlertDialog.Builder err = new AlertDialog.Builder(mContext);
+				err.setMessage("No bike to checkin!").setTitle("Error")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Do nothing.
+					}
+				});
+				err.show();
 				haveBike = false;
 				Log.e(tag,"REST API returned error: User does not have a bike to checkin");
 			} else if (result == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 				// Failure (503) - No docks available at station
-				// TODO: Do something that makes sense here.
+				AlertDialog.Builder err = new AlertDialog.Builder(mContext);
+				err.setMessage("No docks available at this station.").setTitle("Error")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Do nothing.
+					}
+				});
+				err.show();
 				Log.e(tag,"REST API returned error: No docks available at station");
 			} else {
 				// REST API returned an error.
