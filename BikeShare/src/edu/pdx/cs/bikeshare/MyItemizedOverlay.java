@@ -185,6 +185,10 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 					checkOut.setMessage(String.format(checkoutMsg, station_id, street_address, current_bikes)).setTitle(station_name)
 					.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
+							GeoPoint p = new GeoPoint(45.4995785100733, -122.670543465424);
+							Thread th = new Thread(new BikeRider(p, mContext, mHandler));
+							th.start();
+							dialog.dismiss();
 						}
 					})
 					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
