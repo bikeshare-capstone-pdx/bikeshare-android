@@ -14,39 +14,39 @@ public class LoginActivity extends Activity{
 	public static final String apiUrl = "http://api.bikeshare.cs.pdx.edu";
 	public static final String tag = "LoginActivity";
 	private Spinner spinner;
- 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
- 
-        spinner = (Spinner) findViewById(R.id.users_spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.user_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-    }
- 
-  
-    // Called when the user clicks the Send button 
-    public void login(View view) throws InterruptedException {
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+
+		spinner = (Spinner) findViewById(R.id.users_spinner);
+		// Create an ArrayAdapter using the string array and a default spinner layout
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+				R.array.user_array, android.R.layout.simple_spinner_item);
+		// Specify the layout to use when the list of choices appears
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		spinner.setAdapter(adapter);
+	}
+
+
+	// Called when the user clicks the Send button 
+	public void login(View view) throws InterruptedException {
 		Thread th = new Thread(new UserSignUp(spinner.getSelectedItem().toString()));
 		th.start();
 		th.join();
 		String message = Integer.toString(UserSignUp.user_id);
-    	if (!message.equals("-1")){
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(EXTRA_MESSAGE, message);
-            startActivity(intent);
-    	}
-    	else {
-    		System.out.println("Invalid user id");
-    	}
+		if (!message.equals("-1")){
+			Intent intent = new Intent(this, MainActivity.class);
+			intent.putExtra(EXTRA_MESSAGE, message);
+			startActivity(intent);
+		}
+		else {
+			System.out.println("Invalid user id");
+		}
 
-    }
+	}
 
 
 	@Override

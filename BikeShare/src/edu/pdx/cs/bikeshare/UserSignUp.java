@@ -26,7 +26,7 @@ public class UserSignUp implements Runnable{
 	private final String signUpPath = "/REST/1.0/login/signup";
 	private String user_name = null;
 	public static int user_id = -1;
-	
+
 	public UserSignUp(String string) {
 		user_name = string;
 	}
@@ -36,15 +36,15 @@ public class UserSignUp implements Runnable{
 		JSONObject result;
 		HttpClient web = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(apiUrl + signUpPath);
-		
+
 		String[] fullName = user_name.split(" ");
 		String first = fullName[0];
 		String last = fullName[1];
-		
+
 		List<NameValuePair> params = new ArrayList<NameValuePair>(3);
 		params.add(new BasicNameValuePair("first_name", first));
 		params.add(new BasicNameValuePair("last_name", last));
-		
+
 		try {
 			httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 			HttpResponse response = web.execute(httppost);
@@ -68,20 +68,20 @@ public class UserSignUp implements Runnable{
 			}
 		} 
 		catch (ClientProtocolException e) {
-		// TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		catch (IOException e) {
-		// TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		catch (JSONException e) {
-		// TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			return -1;
+		return -1;
 	}
-	
+
 	@Override
 	public void run() {
 		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
