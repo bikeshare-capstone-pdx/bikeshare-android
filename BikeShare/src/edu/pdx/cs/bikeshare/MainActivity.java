@@ -33,6 +33,7 @@ public class MainActivity extends ActionBarActivity {
 	MyItemizedOverlay myItemizedOverlay = null;
 	public static final String apiUrl = "http://api.bikeshare.cs.pdx.edu";
 	public static final String tag = "MainActivity";
+	public static Drawable bikeMarker;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,11 @@ public class MainActivity extends ActionBarActivity {
         int markerWidth = marker.getIntrinsicWidth();
         int markerHeight = marker.getIntrinsicHeight();
         marker.setBounds(0, markerHeight, markerWidth, 0);
+        
+        Drawable bikeMarker = getResources().getDrawable(R.drawable.ic_launcher);
+        int bikeMarkerWidth = bikeMarker.getIntrinsicWidth();
+        int bikeMarkerHeight = bikeMarker.getIntrinsicHeight();
+        bikeMarker.setBounds(0, bikeMarkerHeight, bikeMarkerWidth, 0);
          
         ResourceProxy resourceProxy = new DefaultResourceProxyImpl(getApplicationContext());
         

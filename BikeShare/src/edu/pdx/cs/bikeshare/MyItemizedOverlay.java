@@ -40,6 +40,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private MapView mMapView;
 	private Handler mHandler;
 	private BikeRider bike;
+	public Drawable bikeMarker;
  
 	public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy) {
 		super(pDefaultMarker, pResourceProxy);
@@ -83,6 +84,11 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				addBike(bike.getPoint(), "Bike", "Bike");
 			}
 		};
+		
+		bikeMarker = mapView.getResources().getDrawable(R.drawable.ic_launcher);
+        int bikeMarkerWidth = bikeMarker.getIntrinsicWidth();
+        int bikeMarkerHeight = bikeMarker.getIntrinsicHeight();
+        bikeMarker.setBounds(0, bikeMarkerHeight, bikeMarkerWidth, 0);
 	}
   
 	public void addItem(GeoPoint p, String title, String snippet){
@@ -93,6 +99,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	
 	public void addBike(GeoPoint p, String title, String snippet) {
 		bikeOverlayItem = new OverlayItem(title, snippet, p);
+		bikeOverlayItem.setMarker(bikeMarker);
 		overlayItemList.add(bikeOverlayItem);
 		populate();
 	}
@@ -171,6 +178,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 					JSONObject jStation = new JSONObject(result);
 					// Construct a station object from the data.
 					int station_id = jStation.getInt("STATION_ID");
+					final int st_id = station_id;
 					String station_name = jStation.getString("STATION_NAME");
 					String street_address = jStation.getString("STREET_ADDRESS");
 					int current_bikes = jStation.getInt("CURRENT_BIKES");
@@ -186,7 +194,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 					.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							GeoPoint p = new GeoPoint(45.4995785100733, -122.670543465424);
-							Thread th = new Thread(new BikeRider(p, mContext, mHandler));
+							Thread th = new Thread(new BikeRider(p, mContext, mHandler, st_id));
 							th.start();
 							dialog.dismiss();
 						}
@@ -217,30 +225,6 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				// Failed to get data from the API.
 			}
 		}
-	}
-	
-	public void updateRide() {
-		//GeoPoint p = new GeoPoint(45.4995785100733, -122.670543465424);
-    	//bike = new BikeRider(p, mContext, this);GeoPoint p = new GeoPoint(45.4995785100733, -122.670543465424);
-    	/*Runnable runnable =  new Runnable() {
-		public void run() {
-			synchronized (this) {
-				try {
-					wait(5000);
-					System.out.println("Done waiting");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	};
-	Thread th = new Thread(new BikeRider(p, mContext, mHandler));
-	th.start();
-	dialog.dismiss();*/
-    	Thread loop = new Thread(bike);
-    	loop.start();
-    	//mHandler.post(bike);
 	}
 }
 

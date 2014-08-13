@@ -37,6 +37,7 @@ public class BikeRider implements Runnable {
 	private GeoPoint icon;
 	private Context mContext;
 	private Handler mHandler;
+	private int station_id;
 	private final String apiUrl = MainActivity.apiUrl;
 	private final String tag = "Ride Bike";
 	private final String path = "/REST/1.0/bikes/pos";
@@ -49,12 +50,13 @@ public class BikeRider implements Runnable {
 		this.mContext = mContext;
 	}
 	
-	public BikeRider(GeoPoint p, Context mContext, Handler mHandler) {
+	public BikeRider(GeoPoint p, Context mContext, Handler mHandler, int station_id) {
 		this.icon = p;
 		this.lat = p.getLatitude();
 		this.lon = p.getLongitude();
 		this.mContext = mContext;
 		this.mHandler = mHandler;
+		this.station_id = station_id;
 	}
 	
 	public GeoPoint getPoint() {
@@ -75,8 +77,26 @@ public class BikeRider implements Runnable {
 	
 	public JSONArray bikeRoute() {
 		String jsonFile = null;
+		System.out.println(station_id);
 		try {
-			InputStream is = mContext.getAssets().open("routes/OHSU_South_Waterfront_to_Civic_Stadium.json");
+			InputStream is;
+			if (station_id == 0)
+				is = mContext.getAssets().open("routes/OHSU_South_Waterfront_to_Civic_Stadium.json");
+			else if (station_id == 1)
+				is = mContext.getAssets().open("routes/Waterfront_Park_to_Portland_State_University.json");
+			else if (station_id == 2)
+				is = mContext.getAssets().open("routes/Eastbank_Esplanade_to_Portland_State_University.json");
+			else if (station_id == 3)
+				is = mContext.getAssets().open("routes/Moda_Center_to_Portland_State_University.json");
+			else if (station_id == 4)
+				is = mContext.getAssets().open("routes/PSU_to_Moda_Center.json");
+			else if (station_id == 5)
+				is = mContext.getAssets().open("routes/Overlook_Park_to_Portland_State_University.json");
+			else if (station_id == 6)
+				is = mContext.getAssets().open("routes/Civic_Stadium_to_Portland_State_University.json");
+			else
+				is = mContext.getAssets().open("routes/OHSU_South_Waterfront_to_Civic_Stadium.json");
+			//InputStream is = mContext.getAssets().open("routes/OHSU_South_Waterfront_to_Civic_Stadium.json");
 			int size = is.available();
 			byte [] buffer = new byte[size];
 			is.read(buffer);
@@ -92,33 +112,6 @@ public class BikeRider implements Runnable {
 		}
 		return null;
 	}
-	
-	/*public void ride() {
-		String jsonFile = null;
-		try {
-			InputStream is = mContext.getAssets().open("/BikeShare/res/routes/OHSU_South_Waterfront_to_Civic_Stadium.json");
-			int size = is.available();
-			byte [] buffer = new byte[size];
-			is.read(buffer);
-			jsonFile = new String(buffer, "UTF-8");
-			JSONArray coord = new JSONArray(jsonFile);
-			for (int i = 0; i < coord.length(); ++i) {
-				icon = new GeoPoint(coord.getJSONArray(i).getDouble(0), coord.getJSONArray(i).getDouble(1));
-				mio.removeBike();
-				mio.addBike(icon, "Bike", "Bike");
-				Thread.sleep(3000);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
 	
 	public GeoPoint ride(double lat, double lon) {
 		return icon = new GeoPoint(lat, lon);
@@ -236,7 +229,7 @@ public class BikeRider implements Runnable {
 					lat = route.getJSONArray(i).getDouble(1);
 					lon = route.getJSONArray(i).getDouble(0);
 					System.out.println(rider_id + "lat = " + lat + "lon = " + lon);
-					sendPoints(1835, lat, lon);
+					sendPoints(9019, lat, lon);
 					icon = new GeoPoint(route.getJSONArray(i).getDouble(1), route.getJSONArray(i).getDouble(0));
 					Message msg = mHandler.obtainMessage(0, this);
 					mHandler.sendMessage(msg);
