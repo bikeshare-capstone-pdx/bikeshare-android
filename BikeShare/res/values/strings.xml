@@ -10,8 +10,10 @@
     <string name="dialog_station_id">Station ID: 1234\nNumber of bikes available: 7\nCheck out bike?</string>
     <string name="dialog_bikes_available">Number of bikes available: 17</string>
     <string name="check_out">Check out</string>
+    <string name="check_in">Check in</string>
     <string name="cancel">Cancel</string>
     <string name="action_sign_in">Sign in</string>
+    <string name="ok">OK</string>
 
     <string-array name="user_array">
         <item>Sherry Kiss</item>
