@@ -229,7 +229,7 @@ public class BikeRider implements Runnable {
 					lat = route.getJSONArray(i).getDouble(1);
 					lon = route.getJSONArray(i).getDouble(0);
 					System.out.println(rider_id + "lat = " + lat + "lon = " + lon);
-					sendPoints(9019, lat, lon);
+					sendPoints(8480, lat, lon);
 					icon = new GeoPoint(route.getJSONArray(i).getDouble(1), route.getJSONArray(i).getDouble(0));
 					Message msg = mHandler.obtainMessage(0, this);
 					mHandler.sendMessage(msg);
