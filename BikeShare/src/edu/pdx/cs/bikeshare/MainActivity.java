@@ -1,6 +1,5 @@
 package edu.pdx.cs.bikeshare;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -29,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
 public class MainActivity extends ActionBarActivity {
 	MyItemizedOverlay myItemizedOverlay = null;
 	public static final String apiUrl = "http://api.bikeshare.cs.pdx.edu";
@@ -62,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
         
         myItemizedOverlay = new MyItemizedOverlay(marker, resourceProxy, this, mapView);
         mapView.getOverlays().add(myItemizedOverlay);
-        
+               
         new ShowAllStations().execute();
     }
 
