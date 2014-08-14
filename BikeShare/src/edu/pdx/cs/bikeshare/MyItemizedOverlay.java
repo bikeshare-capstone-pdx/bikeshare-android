@@ -44,6 +44,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private Context mContext;
 	private MapView mMapView;
 	private Handler mHandler;
+	private Thread bikeThread;
 	private BikeRider bike;
 	public Drawable bikeMarker;
  
@@ -58,7 +59,9 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			public void handleMessage(Message inputMessage) {
 				bike = (BikeRider) inputMessage.obj;
 				removeBike();
-				addBike(bike.getPoint(), "Bike", "Bike");
+				if (inputMessage.what != 1) {
+					addBike(bike.getPoint(), "Bike", "Bike");
+				}
 			}
 		};
 	}
@@ -75,7 +78,9 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			public void handleMessage(Message inputMessage) {
 				bike = (BikeRider) inputMessage.obj;
 				removeBike();
-				addBike(bike.getPoint(), "Bike", "Bike");
+				if (inputMessage.what != 1) {
+					addBike(bike.getPoint(), "Bike", "Bike");
+				}
 			}
 		};
 	}
@@ -90,7 +95,9 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				bike = (BikeRider) inputMessage.obj;
 				//System.out.println(bike.getPoint().toString());
 				removeBike();
-				addBike(bike.getPoint(), "Bike", "Bike");
+				if (inputMessage.what != 1) {
+					addBike(bike.getPoint(), "Bike", "Bike");
+				}
 			}
 		};
 		
@@ -207,8 +214,8 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 							public void onClick(DialogInterface dialog, int id) {
 								new CheckoutBike().execute(checkoutStationId, UserSignUp.user_id);
 								if (bikeInfo.bike_count > 0) {
-									Thread th = new Thread(new BikeRider(mContext, mHandler, bikeInfo.st_id, UserSignUp.user_id));
-									th.start();
+									bikeThread = new Thread(new BikeRider(mContext, mHandler, bikeInfo.st_id, UserSignUp.user_id));
+									bikeThread.start();
 									//dialog.dismiss();
 								}
 								dialog.dismiss();
@@ -234,6 +241,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						.setPositiveButton(R.string.check_in, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								new CheckinBike().execute(checkinStationId, UserSignUp.user_id);
+								bike.terminate = true;
 							}
 						})
 						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

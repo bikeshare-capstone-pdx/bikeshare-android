@@ -34,6 +34,7 @@ public class BikeRider implements Runnable {
 	private Handler mHandler;
 	private int station_id;
 	private int user_id;
+	public boolean terminate = false;
 	private final String apiUrl = MainActivity.apiUrl;
 	private final String tag = "Ride Bike";
 	private final String path = "/REST/1.0/bikes/pos";
@@ -140,6 +141,8 @@ public class BikeRider implements Runnable {
 			JSONArray route = this.bikeRoute();
 			for (int i = 0; i < route.length() - 1; ++i) {
 				try {
+					if (terminate)
+						break;
 					lat = route.getJSONArray(i).getDouble(1);
 					lon = route.getJSONArray(i).getDouble(0);
 					sendPoints(user_id, lat, lon);
@@ -155,6 +158,9 @@ public class BikeRider implements Runnable {
 					e.printStackTrace();
 				}
 			}
+			while (!terminate) {}
+			Message msg = mHandler.obtainMessage(1, this);
+			mHandler.sendMessage(msg);
 			point = null;
 		}
 	}
