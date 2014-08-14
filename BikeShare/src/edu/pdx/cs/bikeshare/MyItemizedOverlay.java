@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapView;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
@@ -29,6 +30,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.AsyncTask;
 import android.util.Log;
  
@@ -36,7 +40,13 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
       
 	private static final String apiUrl = MainActivity.apiUrl;
 	private ArrayList<OverlayItem> overlayItemList = new ArrayList<OverlayItem>();
-	Context mContext;
+	private OverlayItem bikeOverlayItem;
+	private Context mContext;
+	private MapView mMapView;
+	private Handler mHandler;
+	private Thread bikeThread;
+	private BikeRider bike;
+	public Drawable bikeMarker;
  
 	public static boolean haveBike = false;
 	public static int checkoutStationId = 0;
@@ -44,17 +54,76 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 
 	public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy) {
 		super(pDefaultMarker, pResourceProxy);
+		mHandler = new Handler(Looper.getMainLooper()) {
+			@Override
+			public void handleMessage(Message inputMessage) {
+				bike = (BikeRider) inputMessage.obj;
+				removeBike();
+				if (inputMessage.what != 1) {
+					addBike(bike.getPoint(), "Bike", "Bike");
+				}
+			}
+		};
+	}
+	
+	public Handler getHandler() {
+		return mHandler;
 	}
  
 	public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Context context) {
 		super(pDefaultMarker, pResourceProxy);
 		mContext = context;
+		mHandler = new Handler(Looper.getMainLooper()) {
+			@Override
+			public void handleMessage(Message inputMessage) {
+				bike = (BikeRider) inputMessage.obj;
+				removeBike();
+				if (inputMessage.what != 1) {
+					addBike(bike.getPoint(), "Bike", "Bike");
+				}
+			}
+		};
+	}
+	
+	public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Context context, MapView mapView) {
+		super(pDefaultMarker, pResourceProxy);
+		mContext = context;
+		mMapView = mapView;
+		mHandler = new Handler(Looper.getMainLooper()) {
+			@Override
+			public void handleMessage(Message inputMessage) {
+				bike = (BikeRider) inputMessage.obj;
+				//System.out.println(bike.getPoint().toString());
+				removeBike();
+				if (inputMessage.what != 1) {
+					addBike(bike.getPoint(), "Bike", "Bike");
+				}
+			}
+		};
+		
+		bikeMarker = mapView.getResources().getDrawable(R.drawable.ic_launcher);
+        int bikeMarkerWidth = bikeMarker.getIntrinsicWidth();
+        int bikeMarkerHeight = bikeMarker.getIntrinsicHeight();
+        bikeMarker.setBounds(0, bikeMarkerHeight, bikeMarkerWidth, 0);
 	}
   
 	public void addItem(GeoPoint p, String title, String snippet){
 		OverlayItem newItem = new OverlayItem(title, snippet, p);
 		overlayItemList.add(newItem);
 		populate();
+	}
+	
+	public void addBike(GeoPoint p, String title, String snippet) {
+		bikeOverlayItem = new OverlayItem(title, snippet, p);
+		bikeOverlayItem.setMarker(bikeMarker);
+		overlayItemList.add(bikeOverlayItem);
+		populate();
+	}
+	
+	public void removeBike() {
+		overlayItemList.remove(bikeOverlayItem);
+		populate();
+		mMapView.invalidate();
 	}
  
 	public void addItem(Station s){
@@ -129,6 +198,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 					int current_bikes = jStation.getInt("CURRENT_BIKES");
 					int current_docks = jStation.getInt("CURRENT_DOCKS");
 					int current_discount = jStation.getInt("CURRENT_DISCOUNT");
+					final BikeInfo bikeInfo = new BikeInfo(station_id, current_bikes);
 					if (!haveBike) {
 						// We don't have a bike, offer to check one out.
 						String checkoutMsg = "%s\n";
@@ -143,6 +213,12 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								new CheckoutBike().execute(checkoutStationId, UserSignUp.user_id);
+								if (bikeInfo.bike_count > 0) {
+									bikeThread = new Thread(new BikeRider(mContext, mHandler, bikeInfo.st_id, UserSignUp.user_id));
+									bikeThread.start();
+									//dialog.dismiss();
+								}
+								dialog.dismiss();
 							}
 						})
 						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -165,6 +241,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						.setPositiveButton(R.string.check_in, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								new CheckinBike().execute(checkinStationId, UserSignUp.user_id);
+								bike.terminate = true;
 							}
 						})
 						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -349,6 +426,16 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				Log.e(tag,"REST API returned error: " + result.toString());
 			}
 			return;
+		}
+	}
+	
+	class BikeInfo {
+		public int st_id; //Station ID for where a bike is being checked out from
+		public int bike_count; //Number of bikes at that station
+		
+		BikeInfo(int st_id, int bike_count) {
+			this.st_id = st_id;
+			this.bike_count = bike_count;
 		}
 	}
 }
