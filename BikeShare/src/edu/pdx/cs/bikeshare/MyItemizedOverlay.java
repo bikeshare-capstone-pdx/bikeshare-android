@@ -142,8 +142,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						checkOut.setMessage(String.format(checkoutMsg, station_name, station_id, street_address, current_bikes)).setTitle("Check out bike")
 						.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								int user_id = 1564;
-								new CheckoutBike().execute(checkoutStationId, user_id);
+								new CheckoutBike().execute(checkoutStationId, UserSignUp.user_id);
 							}
 						})
 						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -165,8 +164,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						checkIn.setMessage(String.format(checkinMsg, station_name, station_id, street_address, current_docks)).setTitle("Check in bike")
 						.setPositiveButton(R.string.check_in, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								int user_id = 1564;
-								new CheckinBike().execute(checkinStationId, user_id);
+								new CheckinBike().execute(checkinStationId, UserSignUp.user_id);
 							}
 						})
 						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
