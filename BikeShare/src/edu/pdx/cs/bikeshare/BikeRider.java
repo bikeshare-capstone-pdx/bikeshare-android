@@ -34,6 +34,7 @@ public class BikeRider implements Runnable {
 	private Handler mHandler;
 	private int station_id;
 	private int user_id;
+	private final int MILI_BETWEEN_GPS_EVENTS = 100;
 	public boolean terminate = false;
 	private final String apiUrl = MainActivity.apiUrl;
 	private final String tag = "Ride Bike";
@@ -149,7 +150,7 @@ public class BikeRider implements Runnable {
 					point = new GeoPoint(lat, lon);
 					Message msg = mHandler.obtainMessage(0, this);
 					mHandler.sendMessage(msg);
-					wait(1000);
+					wait(MILI_BETWEEN_GPS_EVENTS);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
