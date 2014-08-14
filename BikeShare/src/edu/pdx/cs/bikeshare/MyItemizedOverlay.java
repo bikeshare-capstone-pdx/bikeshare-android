@@ -186,12 +186,12 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 					JSONObject jStation = new JSONObject(result);
 					// Construct a station object from the data.
 					int station_id = jStation.getInt("STATION_ID");
-					final int st_id = station_id;
 					String station_name = jStation.getString("STATION_NAME");
 					String street_address = jStation.getString("STREET_ADDRESS");
 					int current_bikes = jStation.getInt("CURRENT_BIKES");
 					int current_docks = jStation.getInt("CURRENT_DOCKS");
 					int current_discount = jStation.getInt("CURRENT_DISCOUNT");
+					final BikeInfo bikeInfo = new BikeInfo(station_id, current_bikes);
 					if (!haveBike) {
 						// We don't have a bike, offer to check one out.
 						String checkoutMsg = "%s\n";
@@ -206,8 +206,11 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								new CheckoutBike().execute(checkoutStationId, UserSignUp.user_id);
-								Thread th = new Thread(new BikeRider(mContext, mHandler, st_id, UserSignUp.user_id));
-								th.start();
+								if (bikeInfo.bike_count > 0) {
+									Thread th = new Thread(new BikeRider(mContext, mHandler, bikeInfo.st_id, UserSignUp.user_id));
+									th.start();
+									//dialog.dismiss();
+								}
 								dialog.dismiss();
 							}
 						})
@@ -415,6 +418,16 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				Log.e(tag,"REST API returned error: " + result.toString());
 			}
 			return;
+		}
+	}
+	
+	class BikeInfo {
+		public int st_id; //Station ID for where a bike is being checked out from
+		public int bike_count; //Number of bikes at that station
+		
+		BikeInfo(int st_id, int bike_count) {
+			this.st_id = st_id;
+			this.bike_count = bike_count;
 		}
 	}
 }
