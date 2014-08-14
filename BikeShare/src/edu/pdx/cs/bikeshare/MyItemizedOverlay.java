@@ -233,7 +233,15 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				haveBike = true;
 			} else if (result == HttpStatus.SC_UNAUTHORIZED) {
 				// Failure (401) - User does not exist
-				// TODO: Do something that makes sense here.
+				// TODO: Handle this better.
+				AlertDialog.Builder err = new AlertDialog.Builder(mContext);
+				err.setMessage("Your user ID does not exist. Please restart app.").setTitle("Error")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Do nothing.
+					}
+				});
+				err.show();
 				Log.e(tag,"REST API returned error: User does not exist");
 			} else if (result == HttpStatus.SC_FORBIDDEN) {
 				// Failure (403) - User already has a bike checked out
@@ -303,7 +311,15 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				haveBike = false;
 			} else if (result == HttpStatus.SC_UNAUTHORIZED) {
 				// Failure (401) - User does not exist
-				// TODO: Do something that makes sense here.
+				// TODO: Handle this better.
+				AlertDialog.Builder err = new AlertDialog.Builder(mContext);
+				err.setMessage("Your user ID does not exist. Please restart app.").setTitle("Error")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Do nothing.
+					}
+				});
+				err.show();
 				Log.e(tag,"REST API returned error: User does not exist");
 			} else if (result == HttpStatus.SC_FORBIDDEN) {
 				// Failure (403) - User does not have a bike to checkin
