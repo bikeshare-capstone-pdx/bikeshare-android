@@ -114,8 +114,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	}
 	
 	public void removeBike() {
-		if (!overlayItemList.remove(bikeOverlayItem))
-			System.out.println("Couldn't find it");
+		overlayItemList.remove(bikeOverlayItem);
 		populate();
 		mMapView.invalidate();
 	}
@@ -207,8 +206,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 						.setPositiveButton(R.string.check_out, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								new CheckoutBike().execute(checkoutStationId, UserSignUp.user_id);
-								GeoPoint p = new GeoPoint(45.4995785100733, -122.670543465424);
-								Thread th = new Thread(new BikeRider(p, mContext, mHandler, st_id));
+								Thread th = new Thread(new BikeRider(mContext, mHandler, st_id, UserSignUp.user_id));
 								th.start();
 								dialog.dismiss();
 							}
