@@ -35,9 +35,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.AsyncTask;
 import android.util.Log;
- 
+
 public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
-      
+
 	private static final String apiUrl = MainActivity.apiUrl;
 	private ArrayList<OverlayItem> overlayItemList = new ArrayList<OverlayItem>();
 	private OverlayItem bikeOverlayItem;
@@ -47,7 +47,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	private Thread bikeThread;
 	private BikeRider bike;
 	public Drawable bikeMarker;
- 
+
 	public static boolean haveBike = false;
 	public static int checkoutStationId = 0;
 	public static int checkinStationId = 0;
@@ -65,11 +65,11 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			}
 		};
 	}
-	
+
 	public Handler getHandler() {
 		return mHandler;
 	}
- 
+
 	public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Context context) {
 		super(pDefaultMarker, pResourceProxy);
 		mContext = context;
@@ -84,7 +84,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			}
 		};
 	}
-	
+
 	public MyItemizedOverlay(Drawable pDefaultMarker, ResourceProxy pResourceProxy, Context context, MapView mapView) {
 		super(pDefaultMarker, pResourceProxy);
 		mContext = context;
@@ -100,47 +100,47 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				}
 			}
 		};
-		
+
 		bikeMarker = mapView.getResources().getDrawable(R.drawable.ic_launcher);
-        int bikeMarkerWidth = bikeMarker.getIntrinsicWidth();
-        int bikeMarkerHeight = bikeMarker.getIntrinsicHeight();
-        bikeMarker.setBounds(0, bikeMarkerHeight, bikeMarkerWidth, 0);
+		int bikeMarkerWidth = bikeMarker.getIntrinsicWidth();
+		int bikeMarkerHeight = bikeMarker.getIntrinsicHeight();
+		bikeMarker.setBounds(0, bikeMarkerHeight, bikeMarkerWidth, 0);
 	}
-  
+
 	public void addItem(GeoPoint p, String title, String snippet){
 		OverlayItem newItem = new OverlayItem(title, snippet, p);
 		overlayItemList.add(newItem);
 		populate();
 	}
-	
+
 	public void addBike(GeoPoint p, String title, String snippet) {
 		bikeOverlayItem = new OverlayItem(title, snippet, p);
 		bikeOverlayItem.setMarker(bikeMarker);
 		overlayItemList.add(bikeOverlayItem);
 		populate();
 	}
-	
+
 	public void removeBike() {
 		overlayItemList.remove(bikeOverlayItem);
 		populate();
 		mMapView.invalidate();
 	}
- 
+
 	public void addItem(Station s){
 		overlayItemList.add(s);
 		populate();
 	}
-	
+
 	@Override
 	public boolean onSnapToItem(int arg0, int arg1, Point arg2, IMapView arg3) {
 		return false;
 	}
- 
+
 	@Override
 	protected OverlayItem createItem(int arg0) {
 		return overlayItemList.get(arg0);
 	}
- 
+
 	@Override
 	public int size() {
 		return overlayItemList.size();
@@ -152,7 +152,7 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		new ShowStationInfo().execute(s.station_id);
 		return true;
 	}
-	
+
 	private class ShowStationInfo extends AsyncTask<Integer, Void, String> {
 		private final static String route = "/REST/1.0/stations/info/%d";
 		private final static String tag = "ShowAllStations";
@@ -428,11 +428,11 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			return;
 		}
 	}
-	
+
 	class BikeInfo {
 		public int st_id; //Station ID for where a bike is being checked out from
 		public int bike_count; //Number of bikes at that station
-		
+
 		BikeInfo(int st_id, int bike_count) {
 			this.st_id = st_id;
 			this.bike_count = bike_count;

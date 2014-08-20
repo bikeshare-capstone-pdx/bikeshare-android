@@ -39,30 +39,30 @@ public class BikeRider implements Runnable {
 	private final String apiUrl = MainActivity.apiUrl;
 	private final String tag = "Ride Bike";
 	private final String path = "/REST/1.0/bikes/pos";
-	
+
 	public BikeRider(Context mContext, Handler mHandler, int station_id, int user_id) {
 		this.mContext = mContext;
 		this.mHandler = mHandler;
 		this.station_id = station_id;
 		this.user_id = user_id;
 	}
-	
+
 	public GeoPoint getPoint() {
 		return point;
 	}
-	
+
 	public double getLatitude() {
 		return lat;
 	}
-	
+
 	public double getLongitude() {
 		return lon;
 	}
-	
+
 	public void setPoint(GeoPoint p) {
 		point = p;
 	}
-	
+
 	public JSONArray bikeRoute() {
 		String jsonFile = null;
 		try {
@@ -98,7 +98,7 @@ public class BikeRider implements Runnable {
 		}
 		return null;
 	}
-	
+
 	public void sendPoints(int user_id, double lat, double lon) {
 		String rider_id = user_id + "";
 		String latitude = lat + "";
@@ -134,7 +134,7 @@ public class BikeRider implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
